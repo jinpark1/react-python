@@ -1,6 +1,22 @@
 import PropTypes from "prop-types";
 
 const ContactList = ({ contacts, updateContact, updateCallback }) => {
+  const onDelete = async (id) => {
+    try {
+      const options = {
+        method: "DELETE",
+      };
+      const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options);
+      if (response.status === 200) {
+        updateCallback();
+      } else {
+        console.error("Failed to delete contact");
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <div>
       <h2>Contacts</h2>
@@ -23,7 +39,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
               <td>{contact.phone}</td>
               <td>
                 <button onClick={() => updateContact(contact)}>Edit</button>
-                <button>Delete</button>
+                <button onClick={() => onDelete(contact.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -45,4 +61,6 @@ ContactList.propTypes = {
       phone: PropTypes.string,
     })
   ).isRequired,
+  updateContact: PropTypes.func,
+  updateCallback: PropTypes.func,
 };
